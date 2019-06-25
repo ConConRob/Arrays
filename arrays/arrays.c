@@ -100,7 +100,7 @@ char *arr_read(Array *arr, int index) {
 void arr_insert(Array *arr, char *element, int index) {
 
   // Throw an error if the index is greater than the current count
-  if(arr->count <= index){
+  if(arr->count < index){
     printf("%d is out of range\n", index);
     exit(-1);
   }
@@ -140,14 +140,21 @@ void arr_append(Array *arr, char *element) {
  * Throw an error if the value is not found.
  *****/
 void arr_remove(Array *arr, char *element) {
-
   // Search for the first occurence of the element and remove it.
-  // Don't forget to free its memory!
-
+  int i;
+  for(i =0; i<arr->count; i++){
+    if(strcmp(arr->elements[i], element) == 0){
+      // Don't forget to free its memory!
+      free(arr->elements[i]);
+      break;
+    }
+  }
   // Shift over every element after the removed element to the left one position
-
+  for(i; i < arr->count -1; i++){
+    arr->elements[i] = arr->elements[i+1];
+  }
   // Decrement count by 1
-
+  arr->count--;
 }
 
 
@@ -171,27 +178,17 @@ int main(void)
 {
 
   Array *arr = create_array(4);
-  arr->elements[0] = "1";
-  arr->elements[1] = "2";
-  arr->elements[2] = "3";
 
-
-
-  arr->count = 3;
-
-  
-  
-  
   arr_insert(arr, "STRING1", 0);
   arr_insert(arr, "STRING2", 1);
 
   arr_print(arr);
   arr_append(arr, "STRING4");
   arr_print(arr);
-  // arr_insert(arr, "STRING3", 1);
-  // arr_print(arr);
-  // arr_remove(arr, "STRING3");
-  // arr_print(arr);
+  arr_insert(arr, "STRING3", 2);
+  arr_print(arr);
+  arr_remove(arr, "STRING3");
+  arr_print(arr);
 
   // destroy_array(arr);
 
