@@ -1,10 +1,11 @@
-#include <arrays.h>
+// #include <arrays.h>
 #include "../utils/minunit.h"
+#include "../arrays.h"
 
 char *day_1_array_tests()
 {
     Array *arr = create_array(3);
-
+    
     mu_assert(arr->count == 0, "Create failed");
     mu_assert(arr->capacity == 3, "Create failed");
 

@@ -35,12 +35,14 @@ Array *create_array (int capacity) {
  *****/
 void destroy_array(Array *arr) {
 
+  char **a = arr->elements;
   // Free all elements
-  for(int i =0; i < arr->count; i++){
-    free(arr->elements[i]);
-  }
+  // for(a ; *a; a++){
+  //   free(*a);
+  // }
   // Free array
   free(arr->elements);
+  free(arr);
 }
 
 /*****
@@ -48,15 +50,19 @@ void destroy_array(Array *arr) {
  * from old to new
  *****/
 void resize_array(Array *arr) {
-
   // Create a new element storage with double capacity
-
+  int capacity = arr->capacity * 2;
+  char **elements = calloc(capacity, sizeof(char *));
   // Copy elements into the new storage
-
+  int loop_to = arr->count;
+  for(int i = 0; i< loop_to; i++){
+    *(elements + i) = *(arr->elements + i); 
+  }
   // Free the old elements array (but NOT the strings they point to)
-
+  free(arr->elements);
   // Update the elements and capacity to new values
-
+  arr->elements = elements;
+  arr->capacity = capacity;
 }
 
 
@@ -75,8 +81,14 @@ void resize_array(Array *arr) {
 char *arr_read(Array *arr, int index) {
 
   // Throw an error if the index is greater or equal to than the current count
+  if(arr->count <= index){
+    printf("%d is out of range\n", index);
+    exit(-1);
+  }else{
+    // Otherwise, return the element at the given index
+    return *(arr->elements +index);
+  }
 
-  // Otherwise, return the element at the given index
 }
 
 
@@ -88,15 +100,24 @@ char *arr_read(Array *arr, int index) {
 void arr_insert(Array *arr, char *element, int index) {
 
   // Throw an error if the index is greater than the current count
-
+  if(arr->count <= index){
+    printf("%d is out of range\n", index);
+    exit(-1);
+  }
   // Resize the array if the number of elements is over capacity
+  if(arr->count + 1 == arr->capacity){
+    resize_array(arr);
+  }
+  arr_print(arr);
 
   // Move every element after the insert index to the right one position
-
+  for(int i = arr->count ; i >0; i--){
+    arr->elements[i] = arr->elements[i-1];
+  }
   // Copy the element (hint: use `strdup()`) and add it to the array
-
+  arr->elements[0] = strdup(element);
   // Increment count by 1
-
+  arr->count++;
 }
 
 /*****
@@ -150,17 +171,29 @@ void arr_print(Array *arr) {
 int main(void)
 {
 
-  Array *arr = create_array(1);
+  Array *arr = create_array(4);
+  arr->elements[0] = "1";
+  arr->elements[1] = "2";
+  arr->elements[2] = "3";
+  arr->elements[3] = "4";
 
+
+  arr->count = 4;
+
+  
+  
+  printf("%s", arr_read(arr, 1));
   arr_insert(arr, "STRING1", 0);
-  arr_append(arr, "STRING4");
   arr_insert(arr, "STRING2", 0);
-  arr_insert(arr, "STRING3", 1);
-  arr_print(arr);
-  arr_remove(arr, "STRING3");
-  arr_print(arr);
 
-  destroy_array(arr);
+  arr_print(arr);
+  // arr_append(arr, "STRING4");
+  // arr_insert(arr, "STRING3", 1);
+  // arr_print(arr);
+  // arr_remove(arr, "STRING3");
+  // arr_print(arr);
+
+  // destroy_array(arr);
 
   return 0;
 }
