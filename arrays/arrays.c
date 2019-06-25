@@ -37,9 +37,9 @@ void destroy_array(Array *arr) {
 
   char **a = arr->elements;
   // Free all elements
-  // for(a ; *a; a++){
-  //   free(*a);
-  // }
+  for(int i = 0 ; i<arr->count; i++){
+    free(arr->elements[i]);
+  }
   // Free array
   free(arr->elements);
   free(arr);
@@ -128,7 +128,7 @@ void arr_append(Array *arr, char *element) {
     resize_array(arr);
   }
   // Copy the element and add it to the end of the array
-  arr->elements[arr->count] = element;
+  arr->elements[arr->count] = strdup(element);;
   // Increment count by 1
   arr->count++;
 }
@@ -190,7 +190,7 @@ int main(void)
   arr_remove(arr, "STRING3");
   arr_print(arr);
 
-  // destroy_array(arr);
+  destroy_array(arr);
 
   return 0;
 }
